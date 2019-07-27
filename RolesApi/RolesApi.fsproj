@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Suave" Version="2.5.5" />
+    <PackageReference Include="Thoth.Json.Net" Version="3.5.1" />
+    <PackageReference Include="JWT" Version="5.2.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Roles.fs" />
+    <Compile Include="Jwt.fs" />
+    <Compile Include="Permissions.fs" />
+    <Compile Include="RolesApi.fs" />
+  </ItemGroup>
+</Project>
