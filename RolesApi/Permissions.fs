@@ -66,7 +66,7 @@ open Roles
       
 
     open RolesInfrastructure
-
+    type Jwt = {Jwt:string}
     module Handlers=
 
         let AdminPart h=
@@ -79,8 +79,8 @@ open Roles
                 async.Return {Name="name";Surname="surname"}
             permissionHandler [User;Admin] getUserInfo  h
                     
-        let adminAuth = OK (Jwt.generate {Email="admin@example.com";Role = Admin})
-        let userAuth  = OK  (Jwt.generate {Email="user@example.com";Role = User})
+        let adminAuth = OK (Encode.Auto.toString<Jwt> (4,{Jwt = Jwt.generate {Email="admin@example.com";Role = Admin}}))
+        let userAuth  = OK  (Encode.Auto.toString<Jwt> (4,{Jwt = Jwt.generate {Email="user@example.com";Role = User}}))
         
         let  getActiveUsers (ctx:(AdminInfo*HttpContext)) =
             let (adminInfo,_) = ctx
