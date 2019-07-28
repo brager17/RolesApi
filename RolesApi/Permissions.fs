@@ -32,7 +32,7 @@ open Roles
             let (data,ctx) = modifiedContext
             async{
                 let! originalFuncResult = originalfunc ctx
-                return (originalFuncResult |> Option.map (fun x-> (data,x)))
+                return originalFuncResult |> Option.map (fun x-> data,x)
             }
 
         let pathStart (str:string) ctx =
@@ -69,33 +69,33 @@ open Roles
     type Jwt = {Jwt:string}
     module Handlers=
 
-        let AdminPart h=
+        let AdminPart handler =
             let getAdminInfo ctx = 
-                async.Return {ActiveUsersEmails=["user1";"user2"];BanUsersEmails=["user3";"user4"]}
-            permissionHandler  [Admin] getAdminInfo h
+                async.Return {ActiveUsersEmails=["activeUser1@ex.ru";"activeUser2@ex.ru"];BanUsersEmails=["banned1User@ex.ru";"banned2User@ex.ru"]}
+            permissionHandler  [Admin] getAdminInfo handler
 
-        let AccountPart h= 
+        let AccountPart handler = 
             let getUserInfo ctx = 
-                async.Return {Name="name";Surname="surname"}
-            permissionHandler [User;Admin] getUserInfo  h
+                async.Return {Name="Al";Surname="Pacino"}
+            permissionHandler [User;Admin] getUserInfo  handler
                     
         let adminAuth = OK (Encode.Auto.toString<Jwt> (4,{Jwt = Jwt.generate {Email="admin@example.com";Role = Admin}}))
         let userAuth  = OK  (Encode.Auto.toString<Jwt> (4,{Jwt = Jwt.generate {Email="user@example.com";Role = User}}))
         
         let  getActiveUsers (ctx:(AdminInfo*HttpContext)) =
-            let (adminInfo,_) = ctx
+            let adminInfo,_ = ctx
             ok (Encode.Auto.toString<string list> (4,adminInfo.ActiveUsersEmails)) ctx
 
         let getBannedUser (ctx:(AdminInfo*HttpContext)) = 
-             let (adminInfo,_) = ctx
+             let adminInfo,_ = ctx
              ok (Encode.Auto.toString<string list> (4,adminInfo.BanUsersEmails)) ctx
 
         let getName (ctx:UserInfo*HttpContext) = 
-            let (userInfo,_) = ctx
+            let userInfo,_ = ctx
             ok(Encode.toString 4 (Encode.object["name", Encode.string userInfo.Name])) ctx
 
         let getSurname (ctx:UserInfo*HttpContext) = 
-            let (userInfo,_) = ctx
+            let userInfo,_ = ctx
             ok(Encode.toString 4 (Encode.object["surname", Encode.string userInfo.Surname])) ctx
    
 

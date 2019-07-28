@@ -6,7 +6,7 @@ open Suave.Operators
 open PermissionPipeLine.RolesInfrastructure
 open PermissionPipeLine.Handlers
 open Roles
-let testPart = 
+let webPart = 
         GET >=> 
           choose[
                 pathStart "/auth" 
@@ -16,10 +16,10 @@ let testPart =
 
                 pathStart "/admin" 
                         >=>
-                             AdminPart ( chooseP [ pathS "/active" >=> getActiveUsers
-                                                   pathS "/banned" >=> getBannedUser])
+                             AdminPart ( chooseP [ pathS "/activeUsers" >=> getActiveUsers
+                                                   pathS "/bannedUsers" >=> getBannedUser])
 
-                pathStart "/info" 
+                pathStart "/account" 
                         >=>
                              AccountPart (chooseP [ pathS "/name" >=> getName
                                                     pathS "/surname" >=> getSurname])                                                                     
@@ -27,7 +27,7 @@ let testPart =
 
 [<EntryPoint>]
 let main argv =
-    startWebServer {defaultConfig with bindings  = [ HttpBinding.createSimple  HTTP  "0.0.0.0" 8080]} (testPart)
+    startWebServer {defaultConfig with bindings  = [ HttpBinding.createSimple  HTTP  "0.0.0.0" 8080]} (webPart)
     0 // return an integer exit code
 
 
